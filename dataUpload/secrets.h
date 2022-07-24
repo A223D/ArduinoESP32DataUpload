@@ -1,2 +1,5 @@
 #include <Arduino.h>
-extern String apiKey;
+extern const char* apiKey;
+extern const char* detaID;
+extern const char* WifiSSID;
+extern const char* WifiPass;

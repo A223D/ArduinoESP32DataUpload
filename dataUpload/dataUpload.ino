@@ -1,14 +1,32 @@
 #include "secrets.h"
+#include <WiFi.h>
+
+#define LED 2
+
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-  Serial.println("print Setup");
-  Serial.println(apiKey);
+  Serial.begin(115200);
+  pinMode(2, OUTPUT);
+  digitalWrite(2, LOW);
+  Serial.println("Let's begin by connecting to Wifi");
+  WiFi.begin(WifiSSID, WifiPass);
+  Serial.println("Waiting");
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  digitalWrite(2, HIGH);
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+
 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  
+  delay(1000);
+
 
 }
