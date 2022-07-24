@@ -1,10 +1,22 @@
 #include "secrets.h"
 #include <WiFi.h>
-
 #define LED 2
+
+int toggleMe = 0;
+const char* host = "database.deta.sh";
+
+WiFiClient client;
 
 void setup() {
   Serial.begin(115200);
+  char* testConcat = (char *)malloc((strlen("/v1/") + strlen(detaID) + strlen("/") + strlen(detaBaseName) + strlen("/") + strlen("items") + 1 )*sizeof(char));
+  strcpy(testConcat, "/v1/");
+  strncat(testConcat, detaID, strlen(detaID));
+  strncat(testConcat, "/", strlen("/"));
+  strncat(testConcat, detaBaseName, strlen(detaBaseName));
+  strncat(testConcat, "/", strlen("/"));
+  strncat(testConcat, "items", strlen("items"));
+  Serial.println(testConcat);
   pinMode(2, OUTPUT);
   digitalWrite(2, LOW);
   Serial.println("Let's begin by connecting to Wifi");
@@ -19,14 +31,12 @@ void setup() {
 
   Serial.println("");
   Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-
-
 }
 
 void loop() {
-  delay(1000);
-
+    
+  
+  //if(!client.connect("
+  
 
 }
