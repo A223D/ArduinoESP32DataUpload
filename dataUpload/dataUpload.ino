@@ -34,6 +34,18 @@ void setup() {
 }
 
 void loop() {
+  if(!client.connect(host, 80)){
+    Serial.println("Could not connect to host");
+    while(true){
+      Serial.print(".");
+      delay(1000);
+    }
+  }
+
+  client.stop();
+  Serial.print("Completed connection to\t");
+  Serial.println(host);
+  delay(5000);
     
   
   //if(!client.connect("
