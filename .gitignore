@@ -1,1 +1,5 @@
 dataUpload/secrets.cpp
+dataUpload/working.txt
+dataUpload/working.txt.bak
+miscScripts/__pycache__/
+miscScripts/secrets.py
