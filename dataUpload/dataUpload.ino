@@ -1,9 +1,8 @@
 #include "secrets.h"
 #include <WiFi.h>
-#include <HTTPClient.h>
+#include <WiFiClientSecure.h>
 #define LED 2
 
-int toggleMe = 0;
 const char* host = "database.deta.sh";
 
 const char* root_ca = \
@@ -47,38 +46,35 @@ char* URI = NULL;
 
 void setup() {
   Serial.begin(115200);
-  char* URI = (char *)malloc((strlen("/v1/") + strlen(detaID) + strlen("/") + strlen(detaBaseName) + strlen("/") + strlen("items") + 1 ) * sizeof(char));
+  URI = (char *)malloc((strlen("/v1/") + strlen(detaID) + strlen("/") + strlen(detaBaseName) + strlen("/") + strlen("items") + 1 ) * sizeof(char));
   strcpy(URI, "/v1/");
   strncat(URI, detaID, strlen(detaID));
   strncat(URI, "/", strlen("/"));
   strncat(URI, detaBaseName, strlen(detaBaseName));
   strncat(URI, "/", strlen("/"));
   strncat(URI, "items", strlen("items"));
-  Serial.println(URI);
-  pinMode(2, OUTPUT);
-  digitalWrite(2, LOW);
-  Serial.println("Let's begin by connecting to Wifi");
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, LOW);
   WiFi.begin(WifiSSID, WifiPass);
-  Serial.println("Waiting");
+  Serial.println("Waiting to connect to WiFi");
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  digitalWrite(2, HIGH);
-
-  Serial.println("");
+  digitalWrite(LED, HIGH);
+  Serial.println();
   Serial.println("WiFi connected");
   client.setCACert(root_ca);
 }
 
 void loop() {
-  digitalWrite(2, HIGH);
+  digitalWrite(LED, HIGH);
 
   if (client.connect("database.deta.sh", 443)) {
     Serial.println("Connected to server");
     client.print("PUT ");
-    client.print(URI);
+    client.print(URI);    
     client.println(" HTTP/1.1");
     client.println("Host: database.deta.sh");
     client.println("User-Agent: Arduino/1.0");
@@ -88,7 +84,6 @@ void loop() {
     client.println("Content-Type: application/json");
     client.print("x-api-key: ");
     client.println(apiKey);
-    Serial.println(apiKey);
     client.println("Content-Length: 24");
     client.println();
     client.println(String("{\"items\": [{\"age\": 15}]}"));
@@ -97,7 +92,7 @@ void loop() {
     while (true);
   }
 
-  digitalWrite(2, LOW);
+  digitalWrite(LED, LOW);
 
   unsigned long timeout = millis();
   while (client.available() == 0) {
@@ -118,5 +113,5 @@ void loop() {
   Serial.println("closed connection");
 
 
-  delay(200);
+  delay(20000);
 }
