@@ -86,7 +86,7 @@ void loop() {
     client.println(apiKey);
     client.println("Content-Length: 24");
     client.println();
-    client.println(String("{\"items\": [{\"age\": 15}]}"));
+    client.println("{\"items\": [{\"age\": 15}]}");
   } else {
     Serial.println("Could not connect to server");
     while (true);
