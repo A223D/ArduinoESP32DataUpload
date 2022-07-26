@@ -5,6 +5,8 @@
 
 const char* host = "database.deta.sh";
 
+int sample =0;
+
 const char* root_ca = \
                       "-----BEGIN CERTIFICATE-----\n" \
                       "MIIF3jCCA8agAwIBAgIQAf1tMPyjylGoG7xkDjUDLTANBgkqhkiG9w0BAQwFADCB\n" \
@@ -84,9 +86,14 @@ void loop() {
     client.println("Content-Type: application/json");
     client.print("x-api-key: ");
     client.println(apiKey);
-    client.println("Content-Length: 24");
+    //client.println("Content-Length: 26");
+    client.print("Content-Length: ");
+    client.println(String(sample).length() + 23);
     client.println();
-    client.println("{\"items\": [{\"age\": 15}]}");
+    //client.println("{\"items\": [{\"age\": 15}]}");
+    client.print("{\"items\": [{\"age\": ");
+    client.print(String(sample));
+    client.println("}]}");
   } else {
     Serial.println("Could not connect to server");
     while (true);
@@ -111,7 +118,7 @@ void loop() {
   client.stop();
   Serial.println();
   Serial.println("closed connection");
+  sample+=199;
 
-
-  delay(20000);
+  delay(2000);
 }
