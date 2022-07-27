@@ -5,7 +5,7 @@
 
 const char* host = "database.deta.sh";
 
-int sample =0;
+int sample = -1;
 
 const char* root_ca = \
                       "-----BEGIN CERTIFICATE-----\n" \
@@ -72,11 +72,14 @@ void setup() {
 
 void loop() {
   digitalWrite(LED, HIGH);
+  sample = analogRead(34);
+  Serial.print("Reading:\t");
+  Serial.println(sample);
 
   if (client.connect("database.deta.sh", 443)) {
     Serial.println("Connected to server");
     client.print("PUT ");
-    client.print(URI);    
+    client.print(URI);
     client.println(" HTTP/1.1");
     client.println("Host: database.deta.sh");
     client.println("User-Agent: Arduino/1.0");
@@ -86,11 +89,9 @@ void loop() {
     client.println("Content-Type: application/json");
     client.print("x-api-key: ");
     client.println(apiKey);
-    //client.println("Content-Length: 26");
     client.print("Content-Length: ");
     client.println(String(sample).length() + 23);
     client.println();
-    //client.println("{\"items\": [{\"age\": 15}]}");
     client.print("{\"items\": [{\"age\": ");
     client.print(String(sample));
     client.println("}]}");
@@ -118,7 +119,6 @@ void loop() {
   client.stop();
   Serial.println();
   Serial.println("closed connection");
-  sample+=199;
 
-  delay(2000);
+  delay(200);
 }
