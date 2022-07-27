@@ -1,5 +1,4 @@
 #include "secrets.h"
-#include <WiFi.h>
 #include <WiFiClientSecure.h>
 #define LED 2
 
