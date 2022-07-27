@@ -90,7 +90,7 @@ void loop() {
     client.print("x-api-key: ");
     client.println(apiKey);
     client.print("Content-Length: ");
-    client.println(String(sample).length() + 23);
+    client.println(String(sample).length() + 22);
     client.println();
     client.print("{\"items\": [{\"age\": ");
     client.print(String(sample));
