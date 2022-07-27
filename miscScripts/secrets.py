@@ -1,0 +1,2 @@
+PROJECT_KEY= 'MY_DETA_PROJECT_KEY'
+BASE_URL = "https://database.deta.sh/v1/DETA_PROJECT_ID/DETA_BASE_NAME/"
