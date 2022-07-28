@@ -108,6 +108,7 @@ void loop() {
       client.stop();
       return;
     }
+    delay(5);
   }
 
   // Read all the lines of the reply from server and print them to Serial
