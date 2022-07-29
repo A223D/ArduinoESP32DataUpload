@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pot Plotter</title>
+  <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+</head>
+
+<body>
+  <h1>Pot Plotter</h1>
+
+  <div id="live-plot"></div>
+  <div id="live-gauge"></div>
+
+  <script>
+    // create the line graph
+    Plotly.newPlot('live-plot', [{
+      y: [],
+      mode: 'lines',
+    }]);
+
+    // create the gauge
+    Plotly.newPlot('live-gauge', [{
+      type: 'indicator',
+      mode: 'gauge+number',
+      gauge: {
+        axis: {
+          range: [0, 1]
+        }
+      }
+    }]);
+
+    let cnt = 0;
+
+    setInterval(function () {
+      const fake_data = Math.random();
+
+      // update the line graph
+      Plotly.extendTraces('live-plot', {
+        y: [[fake_data]]
+      }, [0]);
+
+      // auto scroll x-axis after reaching 100 data points
+      cnt++;
+      if (cnt > 100) {
+        Plotly.relayout('live-plot', {
+          xaxis: {
+            range: [cnt - 100, cnt]
+          }
+        });
+      }
+
+      // update the gauge
+      Plotly.update('live-gauge', { value: fake_data });
+    }, 100);
+
+  </script>
+</body>
+
+</html>

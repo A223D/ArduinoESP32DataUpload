@@ -3,3 +3,7 @@ dataUpload/working.txt
 dataUpload/working.txt.bak
 miscScripts/__pycache__/
 miscScripts/secrets.py.bak
+venv/
+.env
+.prodenv
+*.pyc
