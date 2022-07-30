@@ -1,8 +1,11 @@
 #include "secrets.h"
 #include <WiFiClientSecure.h>
+#include "time.h"
 #define LED 2
 
-const char* host = "database.deta.sh";
+const char* detaHost = "database.deta.sh";
+const char* ntpServer = "pool.ntp.org";
+
 
 int sample = -1;
 
@@ -44,6 +47,19 @@ const char* root_ca = \
 
 WiFiClientSecure client;
 char* URI = NULL;
+unsigned long epochTime;
+
+
+unsigned long getTime() {
+  time_t now;
+  struct tm timeinfo;
+  if (!getLocalTime(&timeinfo)) {
+    //Serial.println("Failed to obtain time");
+    return (0);
+  }
+  time(&now);
+  return now;
+}
 
 void setup() {
   Serial.begin(115200);
@@ -67,11 +83,27 @@ void setup() {
   Serial.println();
   Serial.println("WiFi connected");
   client.setCACert(root_ca);
+
+  configTime(0, 0, ntpServer);
+  epochTime = getTime();
+  while(epochTime ==0){
+    Serial.println("Wrong time received. Trying again");
+    epochTime=getTime();
+  }
+
+  Serial.print("Current epoch time:\t");
+  Serial.println(epochTime);
+  
 }
 
 void loop() {
   digitalWrite(LED, HIGH);
   sample = analogRead(34);
+  epochTime += (millis()/1000);
+  Serial.print("Epoch Time: ");
+  Serial.println(epochTime);
+  Serial.print("Length: ");
+  Serial.println(String(epochTime).length());
   Serial.print("Reading:\t");
   Serial.println(sample);
 
@@ -89,9 +121,11 @@ void loop() {
     client.print("x-api-key: ");
     client.println(apiKey);
     client.print("Content-Length: ");
-    client.println(String(sample).length() + 22);
+    client.println(String(sample).length() + String(epochTime).length() + 32);
     client.println();
-    client.print("{\"items\": [{\"age\": ");
+    client.print("{\"items\":[{\"key\":\"");
+    client.print(String(epochTime));
+    client.print("\",\"value\":");
     client.print(String(sample));
     client.println("}]}");
   } else {
