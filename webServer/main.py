@@ -1,3 +1,6 @@
+import time
+import random
+import json
 from dotenv import load_dotenv
 import os
 
@@ -7,7 +10,7 @@ from deta import Deta
 from flask import Flask, send_file
 
 deta = Deta(os.getenv('DETA_PROJECT_KEY'))
-db = deta.Base('potmeter')
+db = deta.Base(os.getenv('DETA_BASE_NAME'))
 
 app = Flask(__name__)
 
@@ -17,15 +20,22 @@ def index():
   '''main UI page'''
   return send_file('static/index.html')
 
-@app.get('/latest')
-def get_latest():
+@app.get('/reading')
+def put_reading():
+  '''test helper endpoint that puts a random data point into the db'''
+  db.put({'value': random.randint(0, 1024)}, str(int(time.time())))
+  return 'OK'
+
+
+@app.get('/latest/<timestamp>')
+def get_latest(timestamp: float):
   '''endpoint to get the latest readings from the data base'''
-  # TODO take a "timestamp" parameter and only show readings greater than that
-  resp = db.fetch(limit=1)
+  # only show readings greater than the provided unix timestamp
+  resp = db.fetch(query={'key?gt': timestamp}, limit=1)
   if resp.items:
-    return resp.items[0]
+    return json.dumps(resp.items)
   else:
-    return {}
+    return '', 204  # 204 means 'no content in response'
 
 # run server in debug mode if run directly (for local dev)
 if __name__=='__main__':
