@@ -48,6 +48,11 @@ Some notes about this:
 ## Code Set-Up
 The code is divide divided into 3 files: `dataUpload.ino`, `secrets.cpp`, and `secrets.h`. The `secrets.cpp` contains project secrets like the WiFi credentials, Deta Project ID, Project Key, and Deta Base name. Change `secrets.cpp` to include all relevant information, and make sure `secrets.h` is included in `dataUpload.ino` so it can access the secret variables.
 
+
+## Hardware Setup
+Potentiometer connected to pin 34
+
+![picture of hardware setup](./images/hwsetup.jpeg)
 # Main Code
 
 ## Definitions and Helper Functions
