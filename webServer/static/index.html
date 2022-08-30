@@ -2,91 +2,76 @@
 <html lang="en-CA">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Pot Plotter</title>
-	<script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pot Plotter</title>
+  <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
 <body>
-	<h1>Pot Plotter </h1>
+  <h1>Pot Plotter</h1>
 
-	<div id="live-plot"></div>
-	<div id="live-gauge"></div>
+  <div id="live-plot"></div>
+  <div id="live-gauge"></div>
 
-	<script>
+  <script>
+    // create the line graph
+    Plotly.newPlot('live-plot', [{
+      y: [],
+      mode: 'lines',
+    }]);
 
-		Plotly.newPlot('live-plot', [{
-			y: [],
-			mode: 'lines'
-		}]);
+    // create the gauge
+    Plotly.newPlot('live-gauge', [{
+      type: 'indicator',
+      mode: 'gauge+number',
+      gauge: {
+        axis: {
+          range: [0, 1024]
+        }
+      }
+    }]);
 
-		Plotly.newPlot('live-gauge', [{
-			type: 'indicator',
-			mode: 'gauge+number',
-			gauge: {
-				axis: {
-					range: [0, 4096]
-				}
-			}
-		}]);
+    let cnt = 0;
+    let last_time = (new Date().getTime() / 1000).toString();
+    setInterval(function () {
+      let new_data = null;
+      $.ajax({
+        'url': '/latest/' + last_time,
+        statusCode: {
+          200: function (data) {
+            new_data = JSON.parse(data)[0].value;
+            last_time = JSON.parse(data)[0].key;
 
-		let cnt = 0;
-		let last_time = parseInt((new Date().getTime() / 1000)).toString();
-		console.log("Original: " + last_time)
+            // update the line graph
+            Plotly.extendTraces('live-plot', {
+              y: [[new_data]]
+            }, [0]);
 
-		setInterval(function () {
-			let new_data = null;
-			//console.log(last_time)
-			$.ajax({
-				'url': '/latest/' + last_time,
-				statusCode: {
-					200: function (data) {
-						new_data = JSON.parse(data)[0].value;
-						let new_time = JSON.parse(data)[0].key;
-						//console.log("Reached Here")
+            // update the gauge
+            Plotly.update('live-gauge', { value: new_data });
 
-						if (new_time != last_time) {
+            // auto scroll line graph's x-axis after reaching 100 data points
+            cnt++;
+            if (cnt > 100) {
+              Plotly.relayout('live-plot', {
+                xaxis: {
+                  range: [cnt - 100, cnt]
+                }
+              });
+            }
+          },
+          204: function () { /* do nothing */ }
+        },
+        'error': function (req, err) {
+          console.log('Error in fetching data');
+        }
+      });
+    }, 200);
 
-							last_time = new_time
-							console.log("Got new\t" + last_time)
-
-							Plotly.extendTraces('live-plot', {
-								y: [[new_data]]
-							}, [0]);
-
-							Plotly.update('live-gauge', { value: new_data });
-
-
-							cnt++;
-
-							if (cnt > 100) {
-								Plotly.relayout('live-plot', {
-									xaxis: {
-										range: [cnt - 100, cnt]
-									}
-								});
-							}
-
-						}
-
-					},
-					204: function () { }
-
-				},
-				'error': function (req, err) {
-					console.log("Error in fetching data");
-
-				}
-			});
-		}, 200);
-
-
-	</script>
-
+  </script>
 </body>
-
 
 </html>

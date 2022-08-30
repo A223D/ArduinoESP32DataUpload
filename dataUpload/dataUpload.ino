@@ -62,7 +62,7 @@ unsigned long getTime() {
 }
 
 void setup() {
-  Serial.begin(115200);
+//  Serial.begin(115200);
   URI = (char *)malloc((strlen("/v1/") + strlen(detaID) + strlen("/") + strlen(detaBaseName) + strlen("/") + strlen("items") + 1 ) * sizeof(char));
   strcpy(URI, "/v1/");
   strncat(URI, detaID, strlen(detaID));
@@ -73,26 +73,26 @@ void setup() {
   pinMode(LED, OUTPUT);
   digitalWrite(LED, LOW);
   WiFi.begin(WifiSSID, WifiPass);
-  Serial.println("Waiting to connect to WiFi");
+//  Serial.println("Waiting to connect to WiFi");
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+//    //Serial.print(".");
   }
   digitalWrite(LED, HIGH);
-  Serial.println();
-  Serial.println("WiFi connected");
+  //Serial.println();
+  //Serial.println("WiFi connected");
   client.setCACert(root_ca);
 
   configTime(0, 0, ntpServer);
   epochTime = getTime();
   while(epochTime ==0){
-    Serial.println("Wrong time received. Trying again");
+    //Serial.println("Wrong time received. Trying again");
     epochTime=getTime();
   }
 
-  Serial.print("Current epoch time:\t");
-  Serial.println(epochTime);
+  //Serial.print("Current epoch time:\t");
+  //Serial.println(epochTime);
   
 }
 
@@ -100,15 +100,15 @@ void loop() {
   digitalWrite(LED, HIGH);
   sample = analogRead(34);
   epochTime += (millis()/1000);
-  Serial.print("Epoch Time: ");
-  Serial.println(epochTime);
-  Serial.print("Length: ");
-  Serial.println(String(epochTime).length());
-  Serial.print("Reading:\t");
-  Serial.println(sample);
+  //Serial.print("Epoch Time: ");
+  //Serial.println(epochTime);
+  //Serial.print("Length: ");
+  //Serial.println(String(epochTime).length());
+  //Serial.print("Reading:\t");
+  //Serial.println(sample);
 
   if (client.connect("database.deta.sh", 443)) {
-    Serial.println("Connected to server");
+    //Serial.println("Connected to server");
     client.print("PUT ");
     client.print(URI);
     client.println(" HTTP/1.1");
@@ -129,7 +129,7 @@ void loop() {
     client.print(String(sample));
     client.println("}]}");
   } else {
-    Serial.println("Could not connect to server");
+    //Serial.println("Could not connect to server");
     while (true);
   }
 
@@ -138,21 +138,21 @@ void loop() {
   unsigned long timeout = millis();
   while (client.available() == 0) {
     if (millis() - timeout > 5000) {
-      Serial.println(">>> Client Timeout  !");
+      //Serial.println(">>> Client Timeout  !");
       client.stop();
       return;
     }
     delay(5);
   }
 
-  // Read all the lines of the reply from server and print them to Serial
+  // Read all the lines of the reply from server and print them to //Serial
   while (client.available()) {
     String line = client.readStringUntil('\r');
-    Serial.print(line);
+    //Serial.print(line);
   }
   client.stop();
-  Serial.println();
-  Serial.println("closed connection");
+  //Serial.println();
+  //Serial.println("closed connection");
 
   delay(200);
 }
