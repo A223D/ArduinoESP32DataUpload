@@ -23,7 +23,7 @@ def index():
 @app.get('/reading')
 def put_reading():
   '''test helper endpoint that puts a random data point into the db'''
-  db.put({'value': random.randint(0, 1024)}, str(int(time.time())))
+  db.put({'value': random.randint(0, 4096)}, str(int(time.time())))
   return 'OK'
 
 
