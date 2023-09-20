@@ -7,7 +7,7 @@ This project assumes you have a decent amount of experience with using the ESP32
 
 In this ESP32 Arduino sketch, we connect to WiFi and make a `PUT` request to the Deta Base server, using HTTP(hyper-text transfer protocol) over TLS(transport layer security protocol). According to the way we have set up our project, we want our database to have two fields: `key`, and `value`. `key` will store the current Unix time, as a unique value for a `value`, which will be some reading from a potentiometer. 
 
-According to the [HTTP API Deta Docs](https://docs.deta.sh/docs/base/http/#put-items), we need to make the `PUT` request to the URL  `https://database.deta.sh/v1/{project_id}/{base_name}/items`, where we need to provide `{project_id}` and `{base-name}`. We also need to provide our project key in the `x-api-key` header of our request. We also need to provide the `content-type` header with the value `application/json`. 
+According to the [HTTP API Deta Docs](https://deta.space/docs/en/build/reference/http-api/base), we need to make the `PUT` request to the URL  `https://database.deta.sh/v1/{project_id}/{base_name}/items`, where we need to provide `{project_id}` and `{base-name}`. We also need to provide our project key in the `x-api-key` header of our request. We also need to provide the `content-type` header with the value `application/json`. 
 
 Our request must contain a JSON payload describing what we want to put into the database. Along with this, the `content-length` header is also necessary, and must contain the size of our JSON payload. The payload must be in this format:
 ```json
