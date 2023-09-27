@@ -7,3 +7,4 @@ venv/
 .env
 .prodenv
 *.pyc
+.space/
